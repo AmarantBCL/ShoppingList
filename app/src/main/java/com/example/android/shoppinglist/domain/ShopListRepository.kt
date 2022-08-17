@@ -3,11 +3,11 @@ package com.example.android.shoppinglist.domain
 interface ShopListRepository {
     fun getShopList(): List<ShopItem>
 
-    fun addShopItem(item: ShopItem)
+    fun addShopItem(shopItem: ShopItem)
 
-    fun deleteShopItem(item: ShopItem)
+    fun deleteShopItem(shopItem: ShopItem)
 
-    fun editShopItem(item: ShopItem)
+    fun editShopItem(shopItem: ShopItem)
 
     fun getShopItem(id: Int): ShopItem
 }
