@@ -18,7 +18,7 @@
         android:padding="@dimen/regular_margin">
 
         <TextView
-            android:id="@+id/tv_item_name"
+            android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -28,7 +28,7 @@
             tools:text="Салфетки" />
 
         <TextView
-            android:id="@+id/tv_item_count"
+            android:id="@+id/tv_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
