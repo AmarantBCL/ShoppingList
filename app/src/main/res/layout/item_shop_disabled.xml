@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/half_margin"
+    android:layout_marginVertical="@dimen/small_margin"
+    android:elevation="@dimen/min_elevation"
+    app:cardCornerRadius="@dimen/small_margin"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/inactive"
+        android:orientation="horizontal"
+        android:padding="@dimen/regular_margin">
+
+        <TextView
+            android:id="@+id/tv_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/standard_font_size"
+            android:textStyle="bold"
+            tools:text="Салфетки" />
+
+        <TextView
+            android:id="@+id/tv_item_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/standard_font_size"
+            android:textStyle="bold"
+            tools:text="1" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
