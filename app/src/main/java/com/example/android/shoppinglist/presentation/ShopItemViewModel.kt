@@ -8,7 +8,6 @@ import com.example.android.shoppinglist.domain.AddShopItemUseCase
 import com.example.android.shoppinglist.domain.EditShopItemUseCase
 import com.example.android.shoppinglist.domain.GetShopItemUseCase
 import com.example.android.shoppinglist.domain.ShopItem
-import java.lang.Exception
 
 class ShopItemViewModel : ViewModel() {
     private val repository = ShopListRepositoryImpl
@@ -62,6 +61,14 @@ class ShopItemViewModel : ViewModel() {
         _shopItem.value = item
     }
 
+    fun resetErrorInputName() {
+        _errorInputName.value = false
+    }
+
+    fun resetErrorInputCount() {
+        _errorInputCount.value = false
+    }
+
     private fun parseName(inputName: String?): String {
         return inputName?.trim() ?: ""
     }
@@ -80,19 +87,11 @@ class ShopItemViewModel : ViewModel() {
             _errorInputName.value = true
             result = false
         }
-        if (name.isBlank()) {
+        if (count <= 0) {
             _errorInputCount.value = true
             result = false
         }
         return result
-    }
-
-    private fun resetErrorInputName() {
-        _errorInputName.value = false
-    }
-
-    private fun resetErrorInputCount() {
-        _errorInputCount.value = false
     }
 
     private fun closeScreen() {
