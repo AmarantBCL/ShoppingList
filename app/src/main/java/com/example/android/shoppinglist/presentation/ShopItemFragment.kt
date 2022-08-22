@@ -88,7 +88,7 @@ class ShopItemFragment(
             tilCount.error = message
         }
         viewModel.closeActivity.observe(viewLifecycleOwner) {
-            activity?.finish()
+            activity?.onBackPressed()
         }
     }
 
