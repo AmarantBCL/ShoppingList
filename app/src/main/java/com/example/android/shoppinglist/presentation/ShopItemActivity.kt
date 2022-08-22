@@ -146,11 +146,11 @@ class ShopItemActivity : AppCompatActivity() {
         private const val UNKNOWN_MODE = ""
 
         fun newFragmentAddItem(): ShopItemFragment {
-            return ShopItemFragment(MODE_ADD)
+            return ShopItemFragment.newInstanceAddItem()
         }
 
         fun newFragmentEditItem(shopItemId: Int): ShopItemFragment {
-            return ShopItemFragment(MODE_EDIT, shopItemId)
+            return ShopItemFragment.newInstanceEditItem(shopItemId)
         }
 
         fun newIntentAddItem(context: Context): Intent {
