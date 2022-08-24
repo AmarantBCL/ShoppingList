@@ -1,20 +1,25 @@
-package com.example.android.shoppinglist.presentation
+package com.example.android.shoppinglist.presentation.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.android.shoppinglist.R
-import com.example.android.shoppinglist.domain.ShopItem
+import com.example.android.shoppinglist.domain.pojo.ShopItem
+import com.example.android.shoppinglist.presentation.viewmodel.ShopItemViewModel
 import com.google.android.material.textfield.TextInputLayout
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemFragment : Fragment() {
     private lateinit var viewModel: ShopItemViewModel
+
+    private lateinit var onEditFinishedListener: OnEditFinishedListener
 
     private lateinit var tilName: TextInputLayout
     private lateinit var tilCount: TextInputLayout
@@ -22,15 +27,34 @@ class ShopItemActivity : AppCompatActivity() {
     private lateinit var editCount: EditText
     private lateinit var buttonSave: Button
 
-    private var screenMode = UNKNOWN_MODE
-    private var shopItemId = ShopItem.UNDEFINED_ID
+    private var screenMode: String = UNKNOWN_MODE
+    private var shopItemId: Int = ShopItem.UNDEFINED_ID
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnEditFinishedListener) {
+            onEditFinishedListener = context
+        } else {
+            throw RuntimeException("Activity must implement OnEditFinishedListener interface")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_shop_item)
-        parseIntent()
+        parseParams()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_shop_item, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-        initViews()
+        initViews(view)
         launchRightMode()
         observeViewModel()
         setEditTextWatchers()
@@ -45,7 +69,7 @@ class ShopItemActivity : AppCompatActivity() {
 
     private fun launchEditMode() {
         viewModel.getShopItem(shopItemId)
-        viewModel.shopItem.observe(this) {
+        viewModel.shopItem.observe(viewLifecycleOwner) {
             editName.setText(it.name)
             editCount.setText(it.count.toString())
         }
@@ -61,7 +85,7 @@ class ShopItemActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.errorInputName.observe(this) {
+        viewModel.errorInputName.observe(viewLifecycleOwner) {
             val message = if (it) {
                 getString(R.string.invalid_name)
             } else {
@@ -69,7 +93,7 @@ class ShopItemActivity : AppCompatActivity() {
             }
             tilName.error = message
         }
-        viewModel.errorInputCount.observe(this) {
+        viewModel.errorInputCount.observe(viewLifecycleOwner) {
             val message = if (it) {
                 getString(R.string.invalid_count)
             } else {
@@ -77,25 +101,26 @@ class ShopItemActivity : AppCompatActivity() {
             }
             tilCount.error = message
         }
-        viewModel.closeActivity.observe(this) {
-            finish()
+        viewModel.closeActivity.observe(viewLifecycleOwner) {
+            onEditFinishedListener.onEditFinished()
         }
     }
 
-    private fun parseIntent() {
-        if (!intent.hasExtra(EXTRA_SCREEN_MODE)) {
+    private fun parseParams() {
+        val args = requireArguments()
+        if (!args.containsKey(SCREEN_MODE)) {
             throw RuntimeException("Param extra screen mode is absent")
         }
-        val mode = intent.getStringExtra(EXTRA_SCREEN_MODE)
+        val mode = args.getString(SCREEN_MODE)
         if (mode != MODE_ADD && mode != MODE_EDIT) {
             throw RuntimeException("Unknown screen mode $mode")
         }
         screenMode = mode
         if (screenMode == MODE_EDIT) {
-            if (!intent.hasExtra(EXTRA_SHOP_ITEM_ID)) {
+            if (!args.containsKey(SHOP_ITEM_ID)) {
                 throw RuntimeException("Param extra shop item id is absent")
             }
-            shopItemId = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
+            shopItemId = args.getInt(SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
         }
     }
 
@@ -124,32 +149,40 @@ class ShopItemActivity : AppCompatActivity() {
         })
     }
 
-    private fun initViews() {
-        tilName = findViewById(R.id.til_name)
-        tilCount = findViewById(R.id.til_count)
-        editName = findViewById(R.id.edit_name)
-        editCount = findViewById(R.id.edit_count)
-        buttonSave = findViewById(R.id.btn_save)
+    private fun initViews(view: View) {
+        tilName = view.findViewById(R.id.til_name)
+        tilCount = view.findViewById(R.id.til_count)
+        editName = view.findViewById(R.id.edit_name)
+        editCount = view.findViewById(R.id.edit_count)
+        buttonSave = view.findViewById(R.id.btn_save)
+    }
+
+    interface OnEditFinishedListener {
+        fun onEditFinished()
     }
 
     companion object {
-        private const val EXTRA_SCREEN_MODE = "extra_mode"
-        private const val EXTRA_SHOP_ITEM_ID = "extra_shop_item_id"
+        private const val SCREEN_MODE = "extra_mode"
+        private const val SHOP_ITEM_ID = "extra_shop_item_id"
         private const val MODE_EDIT = "mode_edit"
         private const val MODE_ADD = "mode_add"
         private const val UNKNOWN_MODE = ""
 
-        fun newIntentAddItem(context: Context): Intent {
-            val intent = Intent(context, ShopItemActivity::class.java)
-            intent.putExtra(EXTRA_SCREEN_MODE, MODE_ADD)
-            return intent
+        fun newInstanceAddItem(): ShopItemFragment {
+            return ShopItemFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SCREEN_MODE, MODE_ADD)
+                }
+            }
         }
 
-        fun newIntentEditItem(context: Context, id: Int): Intent {
-            val intent = Intent(context, ShopItemActivity::class.java)
-            intent.putExtra(EXTRA_SCREEN_MODE, MODE_EDIT)
-            intent.putExtra(EXTRA_SHOP_ITEM_ID, id)
-            return intent
+        fun newInstanceEditItem(id: Int): ShopItemFragment {
+            return ShopItemFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SCREEN_MODE, MODE_EDIT)
+                    putInt(SHOP_ITEM_ID, id)
+                }
+            }
         }
     }
 }

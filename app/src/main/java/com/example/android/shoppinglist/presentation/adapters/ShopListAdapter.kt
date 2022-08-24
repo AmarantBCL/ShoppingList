@@ -1,10 +1,10 @@
-package com.example.android.shoppinglist.presentation
+package com.example.android.shoppinglist.presentation.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.android.shoppinglist.R
-import com.example.android.shoppinglist.domain.ShopItem
+import com.example.android.shoppinglist.domain.pojo.ShopItem
 
 class ShopListAdapter : ListAdapter<ShopItem, ShopListViewHolder>(ShopItemDiffCallback()) {
     var clickListener: ((ShopItem) -> Unit)? = null
