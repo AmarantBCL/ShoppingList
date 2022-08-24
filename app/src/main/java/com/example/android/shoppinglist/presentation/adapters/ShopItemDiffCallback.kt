@@ -1,7 +1,7 @@
-package com.example.android.shoppinglist.presentation
+package com.example.android.shoppinglist.presentation.adapters
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.android.shoppinglist.domain.ShopItem
+import com.example.android.shoppinglist.domain.pojo.ShopItem
 
 class ShopItemDiffCallback : DiffUtil.ItemCallback<ShopItem>() {
     override fun areItemsTheSame(oldItem: ShopItem, newItem: ShopItem): Boolean {

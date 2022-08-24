@@ -1,13 +1,15 @@
-package com.example.android.shoppinglist.presentation
+package com.example.android.shoppinglist.presentation.activity
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.android.shoppinglist.R
-import com.example.android.shoppinglist.domain.ShopItem
+import com.example.android.shoppinglist.domain.pojo.ShopItem
+import com.example.android.shoppinglist.presentation.fragments.ShopItemFragment
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditFinishedListener {
     private var screenMode = UNKNOWN_MODE
     private var shopItemId = ShopItem.UNDEFINED_ID
 
@@ -15,7 +17,14 @@ class ShopItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
         parseIntent()
-        launchRightMode()
+        if (savedInstanceState == null) {
+            launchRightMode()
+        }
+    }
+
+    override fun onEditFinished() {
+        Toast.makeText(this, getString(R.string.success), Toast.LENGTH_SHORT).show()
+        finish()
     }
 
     private fun launchRightMode() {
@@ -25,7 +34,7 @@ class ShopItemActivity : AppCompatActivity() {
             else -> throw RuntimeException("Unknown screen mode $screenMode")
         }
         supportFragmentManager.beginTransaction()
-            .add(R.id.shop_item_container, fragment)
+            .replace(R.id.shop_item_container, fragment)
             .commit()
     }
 

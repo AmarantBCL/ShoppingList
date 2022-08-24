@@ -1,5 +1,6 @@
-package com.example.android.shoppinglist.presentation
+package com.example.android.shoppinglist.presentation.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,11 +12,14 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.android.shoppinglist.R
-import com.example.android.shoppinglist.domain.ShopItem
+import com.example.android.shoppinglist.domain.pojo.ShopItem
+import com.example.android.shoppinglist.presentation.viewmodel.ShopItemViewModel
 import com.google.android.material.textfield.TextInputLayout
 
 class ShopItemFragment : Fragment() {
     private lateinit var viewModel: ShopItemViewModel
+
+    private lateinit var onEditFinishedListener: OnEditFinishedListener
 
     private lateinit var tilName: TextInputLayout
     private lateinit var tilCount: TextInputLayout
@@ -25,6 +29,15 @@ class ShopItemFragment : Fragment() {
 
     private var screenMode: String = UNKNOWN_MODE
     private var shopItemId: Int = ShopItem.UNDEFINED_ID
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnEditFinishedListener) {
+            onEditFinishedListener = context
+        } else {
+            throw RuntimeException("Activity must implement OnEditFinishedListener interface")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +102,7 @@ class ShopItemFragment : Fragment() {
             tilCount.error = message
         }
         viewModel.closeActivity.observe(viewLifecycleOwner) {
-            activity?.onBackPressed()
+            onEditFinishedListener.onEditFinished()
         }
     }
 
@@ -142,6 +155,10 @@ class ShopItemFragment : Fragment() {
         editName = view.findViewById(R.id.edit_name)
         editCount = view.findViewById(R.id.edit_count)
         buttonSave = view.findViewById(R.id.btn_save)
+    }
+
+    interface OnEditFinishedListener {
+        fun onEditFinished()
     }
 
     companion object {

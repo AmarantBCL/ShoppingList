@@ -1,4 +1,4 @@
-package com.example.android.shoppinglist.domain
+package com.example.android.shoppinglist.domain.pojo
 
 data class ShopItem(
     val name: String,
