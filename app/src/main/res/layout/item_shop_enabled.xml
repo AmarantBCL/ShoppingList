@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="shopItem"
+            type="com.example.android.shoppinglist.domain.pojo.ShopItem" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -25,9 +28,10 @@
 
             <TextView
                 android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="@{shopItem.name}"
                 android:textColor="@color/white"
                 android:textSize="@dimen/standard_font_size"
                 android:textStyle="bold"
@@ -37,6 +41,7 @@
                 android:id="@+id/tv_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{String.valueOf(shopItem.count)}"
                 android:textColor="@color/white"
                 android:textSize="@dimen/standard_font_size"
                 android:textStyle="bold"
