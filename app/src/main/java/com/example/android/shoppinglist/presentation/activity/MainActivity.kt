@@ -1,5 +1,6 @@
 package com.example.android.shoppinglist.presentation.activity
 
+
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.shoppinglist.R
+import com.example.android.shoppinglist.databinding.ActivityMainBinding
 import com.example.android.shoppinglist.presentation.viewmodel.MainViewModel
 import com.example.android.shoppinglist.presentation.fragments.ShopItemFragment
 import com.example.android.shoppinglist.presentation.adapters.ShopListAdapter
@@ -17,11 +19,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditFinishedListener {
     private lateinit var viewModel: MainViewModel
     private lateinit var shopListAdapter: ShopListAdapter
+
+    private lateinit var binding: ActivityMainBinding
+
     private var shopItemContainer: FragmentContainerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initViews()
         setupRecyclerView()
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]

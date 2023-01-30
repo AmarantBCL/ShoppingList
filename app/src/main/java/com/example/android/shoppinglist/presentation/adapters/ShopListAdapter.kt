@@ -2,8 +2,12 @@ package com.example.android.shoppinglist.presentation.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.ListAdapter
 import com.example.android.shoppinglist.R
+import com.example.android.shoppinglist.databinding.ItemShopDisabledBinding
+import com.example.android.shoppinglist.databinding.ItemShopEnabledBinding
 import com.example.android.shoppinglist.domain.pojo.ShopItem
 
 class ShopListAdapter : ListAdapter<ShopItem, ShopListViewHolder>(ShopItemDiffCallback()) {
@@ -16,24 +20,32 @@ class ShopListAdapter : ListAdapter<ShopItem, ShopListViewHolder>(ShopItemDiffCa
             LAYOUT_DISABLED -> R.layout.item_shop_disabled
             else -> throw RuntimeException("Unknown view type: $viewType")
         }
-        val view = LayoutInflater.from(parent.context).inflate(
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(
+            LayoutInflater.from(parent.context),
             layoutId,
             parent,
             false
         )
-        return ShopListViewHolder(view)
+        return ShopListViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ShopListViewHolder, position: Int) {
         val item = getItem(position)
-        with(holder) {
-            tvName.text = item.name
-            tvCount.text = item.count.toString()
-            view.setOnLongClickListener {
-                longClickListener?.invoke(item)
-                true
+        val binding = holder.binding
+        binding.root.setOnLongClickListener {
+            longClickListener?.invoke(item)
+            true
+        }
+        binding.root.setOnClickListener { clickListener?.invoke(item) }
+        when (binding) {
+            is ItemShopDisabledBinding -> {
+                binding.tvName.text = item.name
+                binding.tvCount.text = item.count.toString()
             }
-            view.setOnClickListener { clickListener?.invoke(item) }
+            is ItemShopEnabledBinding -> {
+                binding.tvName.text = item.name
+                binding.tvCount.text = item.count.toString()
+            }
         }
     }
 
