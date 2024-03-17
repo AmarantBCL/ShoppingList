@@ -1,8 +1,9 @@
 package com.example.android.shoppinglist.data
 
 import com.example.android.shoppinglist.domain.pojo.ShopItem
+import javax.inject.Inject
 
-class ShopListMapper {
+class ShopListMapper @Inject constructor() {
 
     fun mapEntityToDbModel(shopItem: ShopItem) = ShopItemDbModel(
         id = shopItem.id,

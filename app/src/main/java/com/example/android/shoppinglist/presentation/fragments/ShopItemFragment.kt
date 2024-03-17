@@ -14,8 +14,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.android.shoppinglist.R
 import com.example.android.shoppinglist.databinding.FragmentShopItemBinding
 import com.example.android.shoppinglist.domain.pojo.ShopItem
+import com.example.android.shoppinglist.presentation.ShopApplication
 import com.example.android.shoppinglist.presentation.viewmodel.ShopItemViewModel
+import com.example.android.shoppinglist.presentation.viewmodel.ViewModelFactory
 import com.google.android.material.textfield.TextInputLayout
+import javax.inject.Inject
 
 class ShopItemFragment : Fragment() {
     private lateinit var viewModel: ShopItemViewModel
@@ -29,7 +32,15 @@ class ShopItemFragment : Fragment() {
     private var screenMode: String = UNKNOWN_MODE
     private var shopItemId: Int = ShopItem.UNDEFINED_ID
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as ShopApplication).component
+    }
+
     override fun onAttach(context: Context) {
+        component.inject(this)
         super.onAttach(context)
         if (context is OnEditFinishedListener) {
             onEditFinishedListener = context
@@ -53,7 +64,7 @@ class ShopItemFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory)[ShopItemViewModel::class.java]
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         launchRightMode()
