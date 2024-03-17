@@ -7,9 +7,6 @@ import com.example.android.shoppinglist.domain.usecase.AddShopItemUseCase
 import com.example.android.shoppinglist.domain.usecase.EditShopItemUseCase
 import com.example.android.shoppinglist.domain.usecase.GetShopItemUseCase
 import com.example.android.shoppinglist.domain.pojo.ShopItem
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
@@ -84,9 +81,9 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
 
     private fun parseCount(inputCount: String?): Int {
         return try {
-            inputCount?.trim()?.toInt() ?: 0
+            inputCount?.trim()?.toInt() ?: DEFAULT_ITEM_COUNT
         } catch (e: RuntimeException) {
-            0
+            DEFAULT_ITEM_COUNT
         }
     }
 
@@ -105,5 +102,9 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
 
     private fun closeScreen() {
         _closeActivity.value = Unit
+    }
+
+    private companion object {
+        private const val DEFAULT_ITEM_COUNT = 1
     }
 }
